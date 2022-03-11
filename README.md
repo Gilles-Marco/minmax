@@ -1,4 +1,4 @@
-Author :
+# Author
 1. Julian FERRARINI
 2. Marco GILLES
 
@@ -84,3 +84,7 @@ The result is:
 # Goal
 
 Our goal is to write a minmax algorithm to play the game
+
+# Implement alpha cut
+
+# Implement beta cut

@@ -5,10 +5,10 @@ Auteur : Julian FERRARINI
 Auteur : Marco GILLES
 """
 
-from Trou import Trou
-from Plateau import Plateau
-from Joueur import Joueur
-from regex_pattern_valid import extract_case_number, extract_couleur
+from game.Trou import Trou
+from game.Plateau import Plateau
+from game.Joueur import Joueur
+from game.regex_pattern_valid import extract_case_number, extract_couleur
 
 import random
 import time
