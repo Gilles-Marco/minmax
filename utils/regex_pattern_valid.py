@@ -4,14 +4,14 @@ import re
 couleur_graine_pattern = re.compile(r"[R|B]", re.M)
 numero_case_pattern = re.compile(r"[1][0-6]|[1-9]", re.M)
 
-def extract_case_number(action):
+def extract_case_number(action: str):
     does_match = re.search(numero_case_pattern, action)
     if does_match:
         return does_match[0]
     else:
         return None
 
-def extract_couleur(action):
+def extract_couleur(action: str):
     does_match = re.search(couleur_graine_pattern, action)
     if does_match:
         return does_match[0]

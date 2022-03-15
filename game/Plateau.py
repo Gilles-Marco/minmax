@@ -1,15 +1,16 @@
-from game.regex_pattern_valid import extract_case_number, extract_couleur
+from utils.regex_pattern_valid import extract_case_number, extract_couleur
+from game import Joueur, Trou
 
 class Plateau:
 
-    def __init__(self, joueurs, trous):
+    def __init__(self, joueurs: list[Joueur], trous: list[Trou]):
         
         self.joueurs = joueurs
         self.trous = trous
 
         print(self.trous)
 
-    def valid_action(self, action, joueur):
+    def valid_action(self, action: str, joueur: Joueur) -> bool:
         """
         Validate if the action requested by the player is valid
         Retourne True si l'action du joueur est valide
@@ -49,7 +50,7 @@ class Plateau:
 
 
 
-    def play_action(self, action, joueur):
+    def play_action(self, action: str, joueur: Joueur):
         """
             Extrait le trou originel et l'action à jouer en fonction de la couleur des graines à récupérer
         """
@@ -79,35 +80,48 @@ class Plateau:
         if affame:
             self.donner_tte_graines(affame)
 
-    def seme_graine_rouge(self, trou_originel):
+    def seme_graine_rouge(self, trou_originel: Trou) -> Trou:
         """
         Seme le nombre de graines rouges du trou originel dans chaque trou excepté le trou originel
         Et retire les graines rouges du trou originel
         Retourne la dernière case semée
         """
         dernier_trou = None
-        for i in range(trou_originel.graine_Rouge):
+        i = 0
+        while (trou_originel.graine_Rouge > 0):
             index_trou_a_semer = (trou_originel.numero+i)%16
-            self.trous[index_trou_a_semer].graine_Rouge += 1
-            dernier_trou = self.trous[index_trou_a_semer]
-        trou_originel.graine_Rouge = 0
+            # Si c'est le trou originel on ne sème pas
+            if (self.trous[index_trou_a_semer] == trou_originel):
+                i += 1
+            else:
+                self.trous[index_trou_a_semer].graine_Rouge += 1
+                dernier_trou = self.trous[index_trou_a_semer]
+                trou_originel.graine_Rouge -= 1
+                i += 1
         return dernier_trou
     
-    def seme_graine_bleu(self, trou_originel):
+    def seme_graine_bleu(self, trou_originel: Trou) -> Trou:
         """
         Seme 1 graine bleu dans les trous adverses * le nombre de graine bleus dans le trou
         Et retire les graines bleus du trou originel
         Retourne la dernière case semée
         """
         dernier_trou = None
-        for i in range(trou_originel.graine_Bleu):
+        i = 0
+        while (trou_originel.graine_Bleu > 0):
             index_trou_a_semer = (trou_originel.numero+(i*2))%16
-            self.trous[index_trou_a_semer].graine_Bleu += 1
-            dernier_trou = self.trous[index_trou_a_semer]
-        trou_originel.graine_Bleu = 0
+            if (self.trous[index_trou_a_semer] == trou_originel):
+                i += 1
+                # on ne sème pas dans le trou d'origine
+            else:
+                self.trous[index_trou_a_semer].graine_Bleu += 1
+                dernier_trou = self.trous[index_trou_a_semer]
+                trou_originel.graine_Bleu -= 1
+                i += 1
+
         return dernier_trou
 
-    def capture_possible(self, dernier_trou):
+    def capture_possible(self, dernier_trou: Trou) -> bool:
         """
         La capture est possible si le nombre total de graines dans le trou est compris entre 2 et 3
         Retourne True si il y a entre 2 et 3 graines
@@ -120,7 +134,7 @@ class Plateau:
         return True if panier >= 2 and panier <= 3 else False
             
 
-    def capture_graine(self, joueur, dernier_trou):
+    def capture_graine(self, joueur: Joueur, dernier_trou: Trou):
         """
         Si le trou appartient au joueur et qu'il y a 2 ou 3 graines bleu ou rouges dans le trou, le joueur les récupère (obligation)
         """
@@ -133,7 +147,7 @@ class Plateau:
             # Comme la capture a été possible on regarde si on peut récupérer les graines du trou d'avant
             dernier_trou = self.trous[(int(dernier_trou.numero)-2)%16]
  
-    def is_starved(self):
+    def is_starved(self) -> Joueur:
         """
         Si un joueur ne peut plus jouer de coup car aucun de ces trous n'a de graines on considère qu'il "starve", il a alors perdu
         Retourne Joueur si un joueur est starve
@@ -147,7 +161,7 @@ class Plateau:
                 return joueur
         return None
 
-    def donner_tte_graines(self, joueur_affame):
+    def donner_tte_graines(self, joueur_affame: Joueur):
         """
         Donne toutes les graines au joueur qui n'est pas affamé
         """
@@ -158,5 +172,5 @@ class Plateau:
             trou.graine_Bleu = 0
             trou.graine_Rouge = 0
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{len(self.joueurs)} joueurs ;; {len(self.trous)} trous"
