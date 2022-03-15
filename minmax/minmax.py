@@ -113,23 +113,32 @@ def minmax(node: Node, depth: int, alpha: int, beta: int, maximise=True) -> int:
     if(depth==0):
         return node.value
 
+    # Max mode
     if maximise:
         maxEval = minsize
         for child in node.relations:
             valuation = minmax(child, depth-1, alpha, beta, maximise=not maximise)
             maxEval = max(valuation, maxEval)
+
+            # Alpha beta cut optimisation
             alpha = max(valuation, alpha)
             if(beta <= alpha):
                 break
+            
+        # Modifie la valeur de la node pour que la fonction predict_action puisse retrouver la node qui donne le meilleur résultat
         node.value = maxEval
         return maxEval
+    # Min mode
     else:
         minEval = maxsize
         for child in node.relations:
             valuation = minmax(child, depth-1, alpha, beta, maximise=not maximise)
             minEval = min(valuation, minEval)
+
+            # Alpha beta cut optimisation
             beta = min(valuation, beta)
             if (beta<=alpha):
                 break
+        # Modifie la valeur de la node pour que la fonction predict_action puisse retrouver la node qui donne le meilleur résultat
         node.value = minEval
         return minEval

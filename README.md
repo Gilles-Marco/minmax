@@ -2,6 +2,35 @@
 1. Julian FERRARINI
 2. Marco GILLES
 
+# Lancer l'application
+
+Pour lancer l'application éxécuté la commande suivante :
+```
+python main.py
+```
+L'application va vous demandez si vous voulez jouer le joueur pair ou impair.
+Le joueur que vous ne choisirez pas sera attribué au ROBOT.
+
+Le joueur impair est le premier joueur à jouer.
+
+Les actions doivent suivre le format suivant, Numéro de trou + R ou B (en majuscule, sensible à la casse)
+
+Par exemple
+- 1B
+- 8R
+- 16B
+- 16R
+
+__Attention__ : L'application n'a été testé que pour une version de python en 3.10, python2 n'est pas supporté
+
+# Description du robot
+
+Le robot construit un graphe des coups qu'il peut éxécuter sur une profondeur de 4.
+
+Puis éxécute un minmax sur le graph ave l'optimisation alpha beta cut
+
+_Tester sur un i7 8550u avec 8Go de RAM, en performance maximale le temps de calcul est de 115 secondes pour une profondeur de 4_
+
 # Game follow these rules
 
 Rules
@@ -80,11 +109,3 @@ Holes 1, 16, 15 are captured 2+3+2=7 seeds are captured
 The result is:
 1 () 2 (2B) 3(1B) 4(2B) 5(1R)
 16 () 15 () 14 (4B)
- 
-# Goal
-
-Our goal is to write a minmax algorithm to play the game
-
-# Implement alpha cut
-
-# Implement beta cut
