@@ -25,15 +25,12 @@ def predict_action(plateau: Plateau, joueur: Joueur, depth=4) -> str:
     plateau_copy = deepcopy(plateau)
 
     start_time = time()
+    # la construction du graph prend beaucoup de temps
     initial_node.relations = build_tree(initial_node, plateau_copy, joueur, depth, joueur)
-    end_time = time()
-    print(f"Calculation for build_tree depth {depth} took {end_time-start_time} seconds")
-
-    start_time = time()
+    # MinMax prend du temps mais moins que build_tree
     best_move = minmax(initial_node, depth, minsize, maxsize, maximise=True)
     end_time = time()
     print(f"Calculation for mimmax depth {depth} took {end_time-start_time} seconds")
-
     print(f"Le score du meilleur move est de : {best_move}")
 
     action = ', '.join(list(map(lambda r: r.action, filter(lambda r: r.value==best_move, initial_node.relations))))
