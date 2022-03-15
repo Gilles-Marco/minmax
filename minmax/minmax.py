@@ -2,6 +2,8 @@ from copy import deepcopy
 from game import Plateau, Joueur, Trou
 from minmax.Node import Node
 from time import time
+from sys import maxsize
+minsize = -maxsize - 1
 
 def predict_action(plateau: Plateau, joueur: Joueur, depth=4) -> str:
     """
@@ -28,7 +30,7 @@ def predict_action(plateau: Plateau, joueur: Joueur, depth=4) -> str:
     print(f"Calculation for build_tree depth {depth} took {end_time-start_time} seconds")
 
     start_time = time()
-    best_move = minmax(initial_node, depth, maximise=True)
+    best_move = minmax(initial_node, depth, minsize, maxsize, maximise=True)
     end_time = time()
     print(f"Calculation for mimmax depth {depth} took {end_time-start_time} seconds")
 
@@ -108,16 +110,29 @@ def eval_node(plateau: Plateau) -> int:
 
     return score
 
-def minmax(node: Node, depth: int, maximise=True) -> int:
+def minmax(node: Node, depth: int, alpha: int, beta: int, maximise=True) -> int:
 
     # On ne va pas plus bas on retourne la valeur
     if(depth==0):
         return node.value
 
-    all_values = []
-    for relation in node.relations:
-        all_values.append(minmax(relation, depth-1, maximise=not maximise))
-
-    node.value = max(all_values) if maximise else min(all_values)
-
-    return node.value
+    if maximise:
+        maxEval = minsize
+        for child in node.relations:
+            valuation = minmax(child, depth-1, alpha, beta, maximise=not maximise)
+            maxEval = max(valuation, maxEval)
+            alpha = max(valuation, alpha)
+            if(beta <= alpha):
+                break
+        node.value = maxEval
+        return maxEval
+    else:
+        minEval = maxsize
+        for child in node.relations:
+            valuation = minmax(child, depth-1, alpha, beta, maximise=not maximise)
+            minEval = min(valuation, minEval)
+            beta = min(valuation, beta)
+            if (beta<=alpha):
+                break
+        node.value = minEval
+        return minEval
