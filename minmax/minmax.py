@@ -48,7 +48,6 @@ def build_tree(node: Node, plateau: Plateau, joueur: Joueur, depth: int, joueur_
     @return Node, liste de node possible à pair de la node initial
     """
     coups = coup_possible(plateau, joueur)
-    next_player = list(filter(lambda j: j.pair!=joueur.pair, plateau.joueurs))[0]
     nodes = []
 
     for coup in coups:
@@ -56,10 +55,12 @@ def build_tree(node: Node, plateau: Plateau, joueur: Joueur, depth: int, joueur_
 
         # Copy du plateau pour ne pas le modifier pour les autres instances de build_tree
         copy_plateau = deepcopy(plateau)
+        joueur, next_player = (copy_plateau.joueurs[0], copy_plateau.joueurs[1]) if copy_plateau.joueurs[0].pair==joueur.pair else (copy_plateau.joueurs[1], copy_plateau.joueurs[0])
+
         copy_plateau.play_action(coup, joueur)
 
         # Evaluation de la node
-        node_coup.value = eval_node(plateau, copy_plateau, joueur_gagnant, node.value)
+        node_coup.value = eval_node(copy_plateau)
 
         # Construit les noeuds fils
         if(depth>0):
@@ -92,19 +93,16 @@ def coup_possible(plateau: Plateau, joueur: Joueur) -> list[str]:
 
     return coups_possibles
 
-def eval_node(previous_plateau: Plateau, current_plateau: Plateau, joueur: Joueur, previous_score: int) -> int:
+def eval_node(plateau: Plateau) -> int:
     """
-    @arg previous_plateau, plateau original avant l'action
-    @arg current_plateau, nouveau plateau après l'action
-    @arg joueur, le joueur pour lequel on prédit le coup, pour lequel l'impact doit être positif ou négatif
+    @arg plateau, nouveau plateau après l'action
     @return score, retourne un score positif ou negatif en fonction de comment ça impacte notre joueur
     """
 
     # Evaluation simple, en fonction des scores des joueurs
-    score = previous_score
-
-    score += current_plateau.joueurs[0].score - previous_plateau.joueurs[0].score
-    score += current_plateau.joueurs[1].score - previous_plateau.joueurs[1].score
+    score = 0
+    score += plateau.joueurs[0].score
+    score += plateau.joueurs[1].score
 
     # TODO Complexification de l'évaluatio n du score, en fonction des cases qui ont été vidé, et que l'impact de l'évolution des scores des joueurs sur la notation ne soit pas linéaire
 

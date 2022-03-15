@@ -29,7 +29,7 @@ plateau = Plateau([j1, j2], trous)
 
 numero_tour = 1
 
-DEPTH = 2
+DEPTH = 4
 
 # Quel joueur est controlé par l'humain
 pattern_impair = re.compile(r"^\s*impair\s*", re.I+re.M)
@@ -69,8 +69,9 @@ while len(list(filter(lambda j: j.score >= 32, plateau.joueurs))) <= 0:
         while not plateau.valid_action(action, joueur):
             print("Action invalide par le bot")
             action = predict_action(plateau, joueur, depth=DEPTH)
-            action = action.split(", ")
-            action = random.choice(action)
+        print(f"Le robot recommande les cases {action}")
+        action = action.split(", ")
+        action = random.choice(action)
         print(f"Le robot joue l'action {action}")
 
     # Appliquer l'action à jouer
