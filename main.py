@@ -29,7 +29,7 @@ plateau = Plateau([j1, j2], trous)
 
 numero_tour = 1
 
-DEPTH = 4
+DEPTH = 2
 
 # Quel joueur est controlé par l'humain
 pattern_impair = re.compile(r"^\s*impair\s*", re.I+re.M)
